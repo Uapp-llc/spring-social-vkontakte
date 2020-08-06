@@ -17,6 +17,7 @@ package org.springframework.social.vkontakte.api;
 
 import com.vk.api.sdk.client.actors.ServiceActor;
 import com.vk.api.sdk.client.actors.UserActor;
+import com.vk.api.sdk.objects.users.UserXtrCounters;
 import org.springframework.social.ApiBinding;
 
 /**
@@ -48,4 +49,6 @@ public interface VKontakte extends ApiBinding {
      * @return {@link UserActor}
      */
     public String getEmail();
+    
+    public UserXtrCounters usersGet();
 }

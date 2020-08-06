@@ -36,57 +36,71 @@ import org.springframework.social.vkontakte.api.VKontakte;
  * @author vkolodrevskiy
  */
 public class VKontakteAdapter implements ApiAdapter<VKontakte> {
-    private final static Log log = LogFactory.getLog(VKontakteAdapter.class);
-
-    private final VkApiClient vkApiClient;
-
-    public VKontakteAdapter() {
-        this.vkApiClient = new VkApiClient(HttpTransportClient.getInstance());
-    }
-
-    public boolean test(VKontakte vkontakte) {
-        try {
-            UserXtrCounters user = vkApiClient.users().get(vkontakte.getUserActor()).fields(UserField.SCREEN_NAME, UserField.PHOTO_200)
-                    .lang(Lang.EN).execute().get(0);
-            return true;
-        } catch (ApiException | ClientException e) {
-            return false;
-        }
-    }
-
-    public void setConnectionValues(VKontakte vkontakte, ConnectionValues values) {
-        try {
-            UserXtrCounters user = vkApiClient.users().get(vkontakte.getUserActor())
-                    .fields(UserField.PHOTO_200)
-                    .lang(Lang.EN).execute().get(0);
-            values.setProviderUserId(String.valueOf(user.getId()));
-            values.setDisplayName(user.getFirstName() + " " + user.getLastName());
-            values.setProfileUrl("https://vk.com/id" + user.getId());
-            values.setImageUrl(user.getPhoto200());
-        } catch (ApiException | ClientException e) {
-            log.error("Error while getting current user info.", e);
-        }
-    }
-
-    public UserProfile fetchUserProfile(VKontakte vkontakte) {
-        try {
-            UserXtrCounters user = vkApiClient.users().get(vkontakte.getUserActor())
-                    .fields(UserField.SCREEN_NAME, UserField.PHOTO_200)
-                    .lang(Lang.EN).execute().get(0);
-            return new UserProfileBuilder()
-                    .setId(String.valueOf(user.getId()))
-                    .setUsername(user.getScreenName())
-                    .setFirstName(user.getFirstName())
-                    .setLastName(user.getLastName())
-                    .setName(user.getFirstName() + " " + user.getLastName())
-                    .build();
-        } catch (ApiException | ClientException e) {
-            log.error("Error while getting current user info.", e);
-            return new UserProfileBuilder().build();
-        }
-    }
-
-    public void updateStatus(VKontakte vkontakte, String message) {
-        // It's not good idea to post something.
-    }
+	private final static Log log = LogFactory.getLog(VKontakteAdapter.class);
+	
+	private final VkApiClient vkApiClient;
+	
+	public VKontakteAdapter() {
+		this.vkApiClient = new VkApiClient(HttpTransportClient.getInstance());
+	}
+	
+	public boolean test(VKontakte vkontakte) {
+		try {
+			UserXtrCounters user = vkApiClient
+					.users()
+					.get(vkontakte.getUserActor())
+					.fields(UserField.SCREEN_NAME, UserField.PHOTO_200)
+					.lang(Lang.EN)
+					.execute()
+					.get(0);
+			return true;
+		} catch (ApiException | ClientException e) {
+			return false;
+		}
+	}
+	
+	public void setConnectionValues(VKontakte vkontakte, ConnectionValues values) {
+		try {
+			UserXtrCounters user = vkApiClient
+					.users()
+					.get(vkontakte.getUserActor())
+					.fields(UserField.PHOTO_200)
+					.lang(Lang.EN)
+					.execute()
+					.get(0);
+			values.setProviderUserId(String.valueOf(user.getId()));
+			values.setDisplayName(user.getFirstName() + " " + user.getLastName());
+			values.setProfileUrl("https://vk.com/id" + user.getId());
+			values.setImageUrl(user.getPhoto200());
+		} catch (ApiException | ClientException e) {
+			log.error("Error while getting current user info.", e);
+		}
+	}
+	
+	public UserProfile fetchUserProfile(VKontakte vkontakte) {
+		try {
+			UserXtrCounters user = vkApiClient
+					.users()
+					.get(vkontakte.getUserActor())
+					.fields(UserField.SCREEN_NAME, UserField.PHOTO_200)
+					.lang(Lang.EN)
+					.execute()
+					.get(0);
+			return new UserProfileBuilder()
+					.setId(String.valueOf(user.getId()))
+					.setUsername(user.getScreenName())
+					.setFirstName(user.getFirstName())
+					.setLastName(user.getLastName())
+					.setEmail(vkontakte.getEmail())
+					.setName(user.getFirstName() + " " + user.getLastName())
+					.build();
+		} catch (ApiException | ClientException e) {
+			log.error("Error while getting current user info.", e);
+			return new UserProfileBuilder().build();
+		}
+	}
+	
+	public void updateStatus(VKontakte vkontakte, String message) {
+		// It's not good idea to post something.
+	}
 }

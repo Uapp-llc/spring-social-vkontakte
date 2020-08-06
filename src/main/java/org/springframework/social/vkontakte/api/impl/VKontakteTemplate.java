@@ -15,8 +15,15 @@
  */
 package org.springframework.social.vkontakte.api.impl;
 
+import com.vk.api.sdk.client.Lang;
+import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.ServiceActor;
 import com.vk.api.sdk.client.actors.UserActor;
+import com.vk.api.sdk.httpclient.HttpTransportClient;
+import com.vk.api.sdk.objects.users.UserXtrCounters;
+import com.vk.api.sdk.queries.users.UserField;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.social.oauth2.AbstractOAuth2ApiBinding;
 import org.springframework.social.vkontakte.api.VKontakte;
 
@@ -26,8 +33,11 @@ import org.springframework.social.vkontakte.api.VKontakte;
  * @author vkolodrevskiy
  */
 public class VKontakteTemplate extends AbstractOAuth2ApiBinding implements VKontakte {
+    private final static Log log = LogFactory.getLog(VKontakteTemplate.class);
+    
     private UserActor userActor;
     private ServiceActor serviceActor;
+    private VkApiClient vkApiClient;
 
     private final Integer providerUserId;
     private final String email;
@@ -57,6 +67,7 @@ public class VKontakteTemplate extends AbstractOAuth2ApiBinding implements VKont
     private void initialize() {
         userActor = new UserActor(providerUserId, accessToken);
         serviceActor = new ServiceActor(clientId, clientSecret, accessToken);
+        vkApiClient = new VkApiClient(HttpTransportClient.getInstance());
     }
 
     @Override
@@ -72,5 +83,21 @@ public class VKontakteTemplate extends AbstractOAuth2ApiBinding implements VKont
     @Override
     public String getEmail() {
         return email;
+    }
+    
+    @Override
+    public UserXtrCounters usersGet() {
+        try {
+            return vkApiClient
+                    .users()
+                    .get(userActor)
+                    .fields(UserField.values())
+                    .lang(Lang.EN)
+                    .execute()
+                    .get(0);
+        } catch (Exception e) {
+            log.error("Error while getting current user info.", e);
+        }
+        return new UserXtrCounters();
     }
 }
