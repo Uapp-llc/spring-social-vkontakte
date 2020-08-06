@@ -22,7 +22,3 @@ dependencies {
     compile ("com.vk.api:sdk:$vkSdkVersion")
     compile ("javax.servlet:javax.servlet-api:$servletApiVersion")
 }
-
-project('spring-social-vkontakte') {
-    description = 'VKontakte API'
-}

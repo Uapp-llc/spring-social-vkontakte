@@ -15,9 +15,3 @@
  */
 
 rootProject.name = 'spring-social-vkontakte'
-
-include 'docs', 'docs:manual'
-def docs = findProject(':docs')
-docs.buildFileName = 'docs.gradle'
-
-include 'spring-social-vkontakte'
